@@ -11,7 +11,7 @@ namespace ToDoList.WebApi.Core.Services
         Task Get(int id, int userId);
         void Add(Task task);
         void Update(Task task);
-        void Delete(int id, int userId);
-        void Finish(int id, int userId);
+        void Delete(int id);
+        void Finish(int id);
     }
 }

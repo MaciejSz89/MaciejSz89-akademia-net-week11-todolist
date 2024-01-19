@@ -19,10 +19,10 @@ namespace ToDoList.WebApi.Persistence
         {
         }
 
-        public virtual DbSet<Category> Categories { get; set; } = null!;
-        public virtual DbSet<Task> Tasks { get; set; } = null!;
-        public virtual DbSet<User> Users { get; set; } = null!;
-
+        public DbSet<Category> Categories { get; set; } = null!;
+        public DbSet<Task> Tasks { get; set; } = null!;
+        public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Role> Roles { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -58,6 +58,18 @@ namespace ToDoList.WebApi.Persistence
                     .HasConstraintName("FK_Tasks_Users");
             });
 
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.Property(e => e.Email)
+                      .IsRequired();
+            });
+
+            modelBuilder.Entity<Role>(entity =>
+            {
+                entity.Property(e => e.Name)
+                      .IsRequired();
+
+            });
 
 
             OnModelCreatingPartial(modelBuilder);

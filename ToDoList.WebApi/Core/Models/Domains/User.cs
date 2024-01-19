@@ -17,8 +17,10 @@ namespace ToDoList.WebApi.Core.Models.Domains
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
         public string PasswordHash { get; set; } = null!;
+        public int? RoleId { get; set; }
 
-        public virtual ICollection<Category> Categories { get; set; }
-        public virtual ICollection<Task> Tasks { get; set; }
+        public Role? Role { get; set; }
+        public ICollection<Category> Categories { get; set; }
+        public ICollection<Task> Tasks { get; set; }
     }
 }

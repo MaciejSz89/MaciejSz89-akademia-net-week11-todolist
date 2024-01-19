@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace ToDoList.WebApi.Persistence.Exceptions
+namespace ToDoList.WebApi.Exceptions
 {
     [Serializable]
     internal class BadRequestException : Exception

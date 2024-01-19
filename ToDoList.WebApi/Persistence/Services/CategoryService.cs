@@ -13,14 +13,14 @@ namespace ToDoList.WebApi.Persistence.Services
             _unitOfWork = unitOfWork;
         }
 
-        public IEnumerable<Category> Get(int userId)
+        public IEnumerable<Category> Get()
         {
-            return _unitOfWork.Category.Get(userId);
+            return _unitOfWork.Category.Get();
         }
 
-        public Category Get(int id, int userId)
+        public Category Get(int id)
         {
-            return _unitOfWork.Category.Get(id, userId);
+            return _unitOfWork.Category.Get(id);
         }
         public void Update(Category category)
         {
@@ -28,9 +28,9 @@ namespace ToDoList.WebApi.Persistence.Services
             _unitOfWork.Complete();
         }
 
-        public void Delete(int id, int userId)
+        public void Delete(int id)
         {
-            _unitOfWork.Category.Delete(id, userId);
+            _unitOfWork.Category.Delete(id);
             _unitOfWork.Complete();
         }
 

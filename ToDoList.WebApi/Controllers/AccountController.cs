@@ -5,9 +5,8 @@ using System;
 using ToDoList.WebApi.Core;
 using ToDoList.WebApi.Core.Models.Dtos;
 using ToDoList.WebApi.Core.Services;
-using ToDoList.WebApi.Models.Response;
 using ToDoList.WebApi.Persisntence;
-using ToDoList.WebApi.Persistence.Exceptions;
+using ToDoList.WebApi.Exceptions;
 
 namespace ToDoList.WebApi.Controllers
 {
@@ -16,45 +15,26 @@ namespace ToDoList.WebApi.Controllers
     public class AccountController : ControllerBase
     {
         private IAccountService _accountService;
-        public AccountController(IUnitOfWork unitOfWork, IAccountService accountService)
+        public AccountController(IAccountService accountService)
         {
             _accountService = accountService;
         }
         [HttpPost("Register")]
-        public Response RegisterUser([FromBody] RegisterUserDto dto)
+        public IActionResult RegisterUser([FromBody] RegisterUserDto dto)
         {
-            
-            var response = new Response();
-            try
-            {
-                _accountService.RegisterUser(dto);
-            }
-            catch (Exception exception)
-            {
-                response.Errors.Add(new Error(exception.Source,
-                                              exception.Message));
-            }
-            return response;
+
+
+            _accountService.RegisterUser(dto);
+            return Ok();
         }
 
         [HttpPost("Login")]
-        public Response Login([FromBody]LoginDto dto)
+        public IActionResult Login([FromBody] LoginDto dto)
         {
-            var response = new DataResponse<string>();
-            try
-            {
-                var token = _accountService.GenerateJwt(dto);
-                response.Data = token;
-                
-            }
-            catch (Exception exception)
-            {
-                response.Errors.Add(new Error(exception.Source,
-                                             exception.Message));
 
-            }
+            var token = _accountService.GenerateJwt(dto);
 
-            return response;
+            return Ok(token);
 
         }
     }

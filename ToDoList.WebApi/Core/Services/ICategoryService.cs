@@ -4,10 +4,10 @@ namespace ToDoList.WebApi.Core.Services
 {
     public interface ICategoryService
     {
-        IEnumerable<Category> Get(int userId);
-        Category Get(int id, int userId);
+        IEnumerable<Category> Get();
+        Category Get(int id);
         void Update(Category category);
         void Add(Category category);
-        void Delete(int id, int userId);
+        void Delete(int id);
     }
 }

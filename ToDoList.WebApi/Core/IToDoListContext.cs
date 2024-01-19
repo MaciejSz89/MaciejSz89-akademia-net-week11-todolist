@@ -10,6 +10,7 @@ namespace ToDoList.WebApi.Core
 
         DbSet<Category> Categories { get; set; }
         DbSet<User> Users { get; set; }
+        DbSet<Role> Roles { get; set; }
 
         int SaveChanges();
     }

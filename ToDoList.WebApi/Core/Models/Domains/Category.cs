@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace ToDoList.WebApi.Core.Models.Domains
 {
-    public partial class Category
+    public partial class Category : IUserDependent
     {
         public Category()
         {

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 
 namespace ToDoList.WebApi.Core.Models.Domains
 {
-    public partial class Task
+
+
+    public partial class Task : IUserDependent
     {
 
         public int Id { get; set; }

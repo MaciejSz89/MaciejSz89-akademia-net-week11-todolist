@@ -15,7 +15,8 @@ namespace ToDoList.WebApi.Core.Models.Converters
                 Email = registerUserDto.Email,
                 FirstName = registerUserDto.FirstName,
                 LastName = registerUserDto.LastName,
-                PasswordHash = hashedPassword
+                PasswordHash = hashedPassword,
+                RoleId = 1
             };
         }
     }

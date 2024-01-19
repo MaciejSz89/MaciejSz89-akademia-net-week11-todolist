@@ -8,7 +8,7 @@ using ToDoList.WebApi.Core.Models.Converters;
 using ToDoList.WebApi.Core.Models.Domains;
 using ToDoList.WebApi.Core.Models.Dtos;
 using ToDoList.WebApi.Core.Services;
-using ToDoList.WebApi.Persistence.Exceptions;
+using ToDoList.WebApi.Exceptions;
 
 namespace ToDoList.WebApi.Persistence.Services
 {
@@ -40,7 +40,8 @@ namespace ToDoList.WebApi.Persistence.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}")
+                new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
+                new Claim(ClaimTypes.Role, $"{user.Role?.Name}")
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));

@@ -12,8 +12,8 @@ using ToDoList.WebApi.Persistence;
 namespace ToDoList.WebApi.Migrations
 {
     [DbContext(typeof(ToDoListContext))]
-    [Migration("20231203115355_UserTableModified")]
-    partial class UserTableModified
+    [Migration("20240119120214_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -45,6 +45,23 @@ namespace ToDoList.WebApi.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("ToDoList.WebApi.Core.Models.Domains.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("ToDoList.WebApi.Core.Models.Domains.Task", b =>
@@ -110,7 +127,12 @@ namespace ToDoList.WebApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("RoleId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
                 });
@@ -145,9 +167,23 @@ namespace ToDoList.WebApi.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ToDoList.WebApi.Core.Models.Domains.User", b =>
+                {
+                    b.HasOne("ToDoList.WebApi.Core.Models.Domains.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId");
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("ToDoList.WebApi.Core.Models.Domains.Category", b =>
                 {
                     b.Navigation("Tasks");
+                });
+
+            modelBuilder.Entity("ToDoList.WebApi.Core.Models.Domains.Role", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("ToDoList.WebApi.Core.Models.Domains.User", b =>
