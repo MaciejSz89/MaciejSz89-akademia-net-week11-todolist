@@ -11,12 +11,14 @@ using System.Text;
 using ToDoList.WebApi;
 using ToDoList.WebApi.Authorization;
 using ToDoList.WebApi.Core;
+using ToDoList.WebApi.Core.Models;
 using ToDoList.WebApi.Core.Models.Domains;
 using ToDoList.WebApi.Core.Models.Dtos;
 using ToDoList.WebApi.Core.Models.Validators;
 using ToDoList.WebApi.Core.Services;
 using ToDoList.WebApi.Middleware;
 using ToDoList.WebApi.Persisntence;
+using ToDoList.WebApi.Persistance.Services;
 using ToDoList.WebApi.Persistence;
 using ToDoList.WebApi.Persistence.Services;
 
@@ -29,6 +31,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -67,6 +70,11 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+builder.Services.AddScoped<IValidator<GetTasksParams>, GetTasksParamsValidator>();
+builder.Services.AddScoped<IValidator<GetCategoriesParams>, GetCategoriesParamsValidator>();
+builder.Services.AddScoped<IUserContextService, UserContextService>();
+
+builder.Services.AddAutoMapper(typeof(ToDoListMappingProfile));
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddScoped<ToDoListSeeder>();
 

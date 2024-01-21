@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using ToDoList.WebApi.Core;
 using ToDoList.WebApi.Core.Models;
 using ToDoList.WebApi.Core.Models.Domains;
+using ToDoList.WebApi.Core.Models.Dtos;
 using ToDoList.WebApi.Core.Services;
 using ToDoList.WebApi.Persistance.Services;
 using Task = ToDoList.WebApi.Core.Models.Domains.Task;
@@ -13,42 +15,48 @@ namespace ToDoList.WebApi.Persistence.Services
     public class TaskService : ITaskService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
         private readonly ILogger<TaskService> _logger;
 
-        public TaskService(IUnitOfWork unitOfWork, 
+        public TaskService(IUnitOfWork unitOfWork,
+                           IMapper mapper,
                            ILogger<TaskService> logger)
         {
             _unitOfWork= unitOfWork;
+            _mapper = mapper;
             _logger = logger;
         }
 
-        public IEnumerable<Task> Get(GetTaskParams param)
+        public IEnumerable<ReadTaskDto> Get(GetTasksParams param)
         {
-            var tasks = _unitOfWork.Task.Get(param);
+            var tasks = _unitOfWork.Task.Get(param).ToList();
             _logger.LogInformation($"Tasks with filter CategoryId:{param.CategoryId}, IsExecuted:{param.IsExecuted}, Title:{param.Title} read");
-            return tasks;
+            return tasks.Select(t => _mapper.Map<ReadTaskDto>(t)).ToList();
         }
 
 
-        public Task Get(int id, int userId)
+        public ReadTaskDto Get(int id)
         {
-            var task = _unitOfWork.Task.Get(id);
+            var task = _mapper.Map<ReadTaskDto>(_unitOfWork.Task.Get(id));
             _logger.LogInformation($"Task with id {task.Id} read");
             return task;
         }
 
-        public void Add(Task task)
+        public int Add(WriteTaskDto taskDto)
         {
+            var task = _mapper.Map<Task>(taskDto);
             _unitOfWork.Task.Add(task);
             _unitOfWork.Complete();
-            _logger.LogInformation($"Task with id {task.Id} deleted");
+            _logger.LogInformation($"Task with id {task.Id} created");
+            return task.Id;
         }
 
-        public void Update(Task task)
+        public void Update(int id, WriteTaskDto taskDto)
         {
-            _unitOfWork.Task.Update(task);
+            var taskToUpdate = _mapper.Map<Task>(taskDto);
+            _unitOfWork.Task.Update(id, taskToUpdate);
             _unitOfWork.Complete();
-            _logger.LogInformation($"Task with id {task.Id} updated");
+            _logger.LogInformation($"Task with id {id} updated");
         }
 
         public void Delete(int id)

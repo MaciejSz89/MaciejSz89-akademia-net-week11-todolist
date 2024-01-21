@@ -11,8 +11,14 @@ namespace ToDoList.WebApi
 
         public ToDoListMappingProfile()
         {
-            CreateMap<Task, TaskDto>()
+            CreateMap<Task, ReadTaskDto>()
                 .ForMember(m => m.CategoryName, c => c.MapFrom(s => s.Category.Name));
+
+            CreateMap<WriteTaskDto, Task>();
+
+            CreateMap<Category, ReadCategoryDto>();
+
+            CreateMap<WriteCategoryDto, Category>();
 
         }
     }

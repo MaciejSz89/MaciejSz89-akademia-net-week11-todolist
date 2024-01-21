@@ -1,13 +1,14 @@
 ﻿using ToDoList.WebApi.Core.Models.Domains;
+using ToDoList.WebApi.Core.Models.Dtos;
 
 namespace ToDoList.WebApi.Core.Services
 {
     public interface ICategoryService
     {
-        IEnumerable<Category> Get();
-        Category Get(int id);
-        void Update(Category category);
-        void Add(Category category);
+        IEnumerable<ReadCategoryDto> Get();
+        ReadCategoryDto Get(int id);
+        void Update(int id, WriteCategoryDto category);
+        int Add(WriteCategoryDto category);
         void Delete(int id);
     }
 }

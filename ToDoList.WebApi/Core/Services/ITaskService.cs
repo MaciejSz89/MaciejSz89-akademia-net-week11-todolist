@@ -1,16 +1,15 @@
 ﻿using ToDoList.WebApi.Core.Models;
-using ToDoList.WebApi.Core.Models.Domains;
-using ToDoList.WebApi.Persistence;
-using Task = ToDoList.WebApi.Core.Models.Domains.Task;
+using ToDoList.WebApi.Core.Models.Dtos;
 
 namespace ToDoList.WebApi.Core.Services
 {
     public interface ITaskService
     {
-        IEnumerable<Task> Get(GetTaskParams param);
-        Task Get(int id, int userId);
-        void Add(Task task);
-        void Update(Task task);
+        IEnumerable<ReadTaskDto> Get(GetTasksParams param);
+        ReadTaskDto Get(int id);
+        int Add(WriteTaskDto taskDto);
+        void Update(int id, WriteTaskDto taskDto);
+
         void Delete(int id);
         void Finish(int id);
     }

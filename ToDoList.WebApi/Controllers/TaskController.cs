@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.WebApi.Core.Models;
+using ToDoList.WebApi.Core.Models.Dtos;
 using ToDoList.WebApi.Core.Services;
 
 namespace ToDoList.WebApi.Controllers
@@ -21,27 +22,46 @@ namespace ToDoList.WebApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetTasks([FromQuery] bool? isExecuted,
-                                   [FromQuery] int? categoryId,
-                                   [FromQuery] string? title)
+        public IActionResult GetTasks([FromBody] GetTasksParams param)
         {
-            var tasks = _taskService.Get(new GetTaskParams
-            {
-                IsExecuted = isExecuted,
-                CategoryId = categoryId,
-                Title = title
-            });
+            var tasks = _taskService.Get(param);
 
             return Ok(tasks);
         }
 
         [HttpGet("{id}")]
-        public IActionResult Task(int id = 0)
+        public IActionResult GetTask(int id = 0)
         {
-            throw new NotImplementedException();
+            var task = _taskService.Get(id);
 
+            return Ok(task);
         }
 
+        [HttpPost]
+        public IActionResult AddTask([FromBody]WriteTaskDto taskDto)
+        {
+            var id = _taskService.Add(taskDto);
+
+            return Created($"/api/[controller]/{id}", null);
+        }
+
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateTask([FromRoute]int id, [FromBody] WriteTaskDto taskDto)
+        {
+            _taskService.Update(id, taskDto);
+
+            return Ok();
+        }
+
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteTask(int id = 0)
+        {
+            _taskService.Delete(id);
+
+            return NoContent();
+        }
 
     }
 }

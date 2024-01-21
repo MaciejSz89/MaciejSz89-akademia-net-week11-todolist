@@ -8,6 +8,7 @@ using ToDoList.WebApi.Core.Repositories;
 using ToDoList.WebApi.Core.Services;
 using ToDoList.WebApi.Exceptions;
 using ToDoList.WebApi.Persistance.Services;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Task = ToDoList.WebApi.Core.Models.Domains.Task;
 
 namespace ToDoList.WebApi.Persistence.Repositories
@@ -27,21 +28,30 @@ namespace ToDoList.WebApi.Persistence.Repositories
             _userContextService = userContextService;
         }
 
-        public IEnumerable<Task> Get(GetTaskParams param)
+        public IEnumerable<Task> Get(GetTasksParams param)
         {
-            var tasks = _context.Tasks
+            var baseQuery = _context.Tasks
                                 .Include(x => x.Category)
-                                .Where(x => x.UserId == _userContextService.UserId
-                                         && x.IsExecuted == param.IsExecuted);
+                                .Where(x => x.UserId == _userContextService.UserId);
 
-            if (param.CategoryId != 0)
-                tasks = tasks.Where(x => x.CategoryId == param.CategoryId);
+            if (param.IsExecuted != null)
+                baseQuery = baseQuery.Where(x => x.IsExecuted == param.IsExecuted);
+
+            if (param.CategoryId != null && param.CategoryId != 0)
+                baseQuery = baseQuery.Where(x => x.CategoryId == param.CategoryId);
 
 
             if (!string.IsNullOrWhiteSpace(param.Title))
-                tasks = tasks.Where(x => x.Title.ToLower().Contains(param.Title.ToLower()));
+                baseQuery = baseQuery.Where(x => x.Title.ToLower().Contains(param.Title.ToLower()));
 
-            return tasks.OrderBy(x => x.Term).ToList();
+            baseQuery = baseQuery.OrderBy(x => x.Term);
+
+            var tasks = baseQuery
+                    .Skip(param.PageSize * (param.PageNumber - 1))
+                    .Take(param.PageSize)
+                    .ToList();
+
+            return tasks;
         }
 
 
@@ -67,13 +77,19 @@ namespace ToDoList.WebApi.Persistence.Repositories
 
         public void Add(Task task)
         {
+            if (_userContextService.UserId == null)
+            {
+                throw new ForbidException();
+            }
+
+            task.UserId = (int)_userContextService.UserId;
             _context.Tasks.Add(task);
         }
 
-        public void Update(Task task)
+        public void Update(int id, Task task)
         {
             var taskToUpdate = _context.Tasks
-                                       .SingleOrDefault(x => x.Id == task.Id);
+                                       .SingleOrDefault(x => x.Id == id);
 
             if (taskToUpdate is null)
                 throw new NotFoundException("Task not found");

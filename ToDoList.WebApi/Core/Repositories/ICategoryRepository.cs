@@ -6,7 +6,7 @@ namespace ToDoList.WebApi.Core.Repositories
     {
         IEnumerable<Category> Get();
         Category Get(int id);
-        void Update(Category category);
+        void Update(int id, Category category);
         void Add(Category category);
         void Delete(int id);
     }

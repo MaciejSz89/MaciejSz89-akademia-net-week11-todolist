@@ -2,7 +2,7 @@
 
 namespace ToDoList.WebApi.Core.Models.Dtos
 {
-    public class TaskDto
+    public class ReadTaskDto
     {
         public int Id { get; set; }
         public string Title { get; set; } = null!;
@@ -10,6 +10,6 @@ namespace ToDoList.WebApi.Core.Models.Dtos
         public DateTime? Term { get; set; }
         public bool IsExecuted { get; set; }
         public int CategoryId { get; set; }
-        public Category CategoryName { get; set; } = null!;
+        public ReadCategoryDto CategoryName { get; set; } = null!;
     }
 }

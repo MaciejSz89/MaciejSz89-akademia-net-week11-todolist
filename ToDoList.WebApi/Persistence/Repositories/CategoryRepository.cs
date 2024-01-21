@@ -51,10 +51,10 @@ namespace MyTasks.Persistence.Repositories
 
             return category;
         }
-        public void Update(Category category)
+        public void Update(int id, Category category)
         {
             var categoryToUpdate = _context.Categories
-                                           .SingleOrDefault(x => x.Id == category.Id);
+                                           .SingleOrDefault(x => x.Id == id);
 
             if (categoryToUpdate is null)
                 throw new NotFoundException("Category not found");
@@ -101,6 +101,13 @@ namespace MyTasks.Persistence.Repositories
 
         public void Add(Category category)
         {
+
+            if (_userContextService.UserId == null)
+            {
+                throw new ForbidException();
+            }
+
+            category.UserId = (int)_userContextService.UserId;
             _context.Categories.Add(category);
         }
     }
