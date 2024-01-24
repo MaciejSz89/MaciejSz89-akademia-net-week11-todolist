@@ -10,6 +10,6 @@ namespace ToDoList.WebApi.Core.Models.Dtos
         public DateTime? Term { get; set; }
         public bool IsExecuted { get; set; }
         public int CategoryId { get; set; }
-        public ReadCategoryDto CategoryName { get; set; } = null!;
+        public string CategoryName { get; set; } = null!;
     }
 }

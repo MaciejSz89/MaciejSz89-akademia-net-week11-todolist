@@ -57,7 +57,9 @@ namespace ToDoList.WebApi.Persistence.Repositories
 
         public Task Get(int id)
         {
-            var task = _context.Tasks.SingleOrDefault(x => x.Id == id);
+            var task = _context.Tasks
+                .Include(t=>t.Category)
+                .SingleOrDefault(x => x.Id == id);
 
             if (task is null)
                 throw new NotFoundException("Task not found");

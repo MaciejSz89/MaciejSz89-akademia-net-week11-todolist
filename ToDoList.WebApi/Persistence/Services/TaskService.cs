@@ -31,7 +31,7 @@ namespace ToDoList.WebApi.Persistence.Services
         {
             var tasks = _unitOfWork.Task.Get(param).ToList();
             _logger.LogInformation($"Tasks with filter CategoryId:{param.CategoryId}, IsExecuted:{param.IsExecuted}, Title:{param.Title} read");
-            return tasks.Select(t => _mapper.Map<ReadTaskDto>(t)).ToList();
+            return _mapper.Map<List<ReadTaskDto>>(tasks);
         }
 
 
