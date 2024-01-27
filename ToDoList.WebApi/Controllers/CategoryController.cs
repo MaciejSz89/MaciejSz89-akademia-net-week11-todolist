@@ -37,7 +37,7 @@ namespace ToDoList.WebApi.Controllers
         {
             var id = _categoryService.Add(taskDto);
 
-            return Created($"/api/[controller]/{id}", null);
+            return Created($"/api/Category/{id}", null);
         }
 
 

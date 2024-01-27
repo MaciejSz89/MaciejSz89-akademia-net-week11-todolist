@@ -32,6 +32,11 @@ namespace ToDoList.WebApi.Middleware
                 context.Response.StatusCode = 404;
                 await context.Response.WriteAsync(notFoundException.Message);
             }
+            catch (ReferencedToAnotherObjectException referencedToAnotherObject)
+            {
+                context.Response.StatusCode = 403;
+                await context.Response.WriteAsync(referencedToAnotherObject.Message);
+            }
             catch (Exception e)
 			{
                 _logger.LogError(e, e.Message);

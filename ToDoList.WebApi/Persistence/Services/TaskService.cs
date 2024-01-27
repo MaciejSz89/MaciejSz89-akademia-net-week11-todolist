@@ -7,6 +7,7 @@ using ToDoList.WebApi.Core.Models;
 using ToDoList.WebApi.Core.Models.Domains;
 using ToDoList.WebApi.Core.Models.Dtos;
 using ToDoList.WebApi.Core.Services;
+using ToDoList.WebApi.Exceptions;
 using ToDoList.WebApi.Persistance.Services;
 using Task = ToDoList.WebApi.Core.Models.Domains.Task;
 
@@ -17,14 +18,17 @@ namespace ToDoList.WebApi.Persistence.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger<TaskService> _logger;
+        private readonly IUserContextService _userContextService;
 
         public TaskService(IUnitOfWork unitOfWork,
                            IMapper mapper,
-                           ILogger<TaskService> logger)
+                           ILogger<TaskService> logger,
+                           IUserContextService userContextService)
         {
             _unitOfWork= unitOfWork;
             _mapper = mapper;
             _logger = logger;
+            _userContextService = userContextService;
         }
 
         public IEnumerable<ReadTaskDto> Get(GetTasksParams param)
@@ -42,16 +46,23 @@ namespace ToDoList.WebApi.Persistence.Services
             return task;
         }
 
-        public int Add(WriteTaskDto taskDto)
+        public int Add(CreateTaskDto taskDto)
         {
             var task = _mapper.Map<Task>(taskDto);
+            var category = _unitOfWork.Category.Get(taskDto.CategoryId);
+
+            if (category.UserId != _userContextService.UserId)
+            {
+                throw new ForbidException();
+            }
+
             _unitOfWork.Task.Add(task);
             _unitOfWork.Complete();
             _logger.LogInformation($"Task with id {task.Id} created");
             return task.Id;
         }
 
-        public void Update(int id, WriteTaskDto taskDto)
+        public void Update(int id, UpdateTaskDto taskDto)
         {
             var taskToUpdate = _mapper.Map<Task>(taskDto);
             _unitOfWork.Task.Update(id, taskToUpdate);

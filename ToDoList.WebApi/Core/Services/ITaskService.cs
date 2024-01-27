@@ -7,8 +7,8 @@ namespace ToDoList.WebApi.Core.Services
     {
         IEnumerable<ReadTaskDto> Get(GetTasksParams param);
         ReadTaskDto Get(int id);
-        int Add(WriteTaskDto taskDto);
-        void Update(int id, WriteTaskDto taskDto);
+        int Add(CreateTaskDto taskDto);
+        void Update(int id, UpdateTaskDto taskDto);
 
         void Delete(int id);
         void Finish(int id);

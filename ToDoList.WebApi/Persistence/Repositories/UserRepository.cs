@@ -1,4 +1,5 @@
-﻿using ToDoList.WebApi.Core;
+﻿using Microsoft.EntityFrameworkCore;
+using ToDoList.WebApi.Core;
 using ToDoList.WebApi.Core.Models.Domains;
 using ToDoList.WebApi.Core.Repositories;
 
@@ -21,7 +22,9 @@ namespace ToDoList.WebApi.Persistence.Repositories
 
         public User? Get(string email)
         {
-            return _context.Users.FirstOrDefault(u => u.Email == email);
+            return _context.Users
+                           .Include(u=>u.Role)
+                           .FirstOrDefault(u => u.Email == email);
         }
     }
 }

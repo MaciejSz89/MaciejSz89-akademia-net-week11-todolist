@@ -14,7 +14,9 @@ namespace ToDoList.WebApi
             CreateMap<Task, ReadTaskDto>()
                 .ForMember(m => m.CategoryName, c => c.MapFrom(s => s.Category.Name));
 
-            CreateMap<WriteTaskDto, Task>();
+            CreateMap<CreateTaskDto, Task>();
+
+            CreateMap<UpdateTaskDto, Task>();
 
             CreateMap<Category, ReadCategoryDto>();
 

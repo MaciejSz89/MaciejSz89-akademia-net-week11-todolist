@@ -77,7 +77,7 @@ namespace MyTasks.Persistence.Repositories
         {
             var categoryToDelete = _context.Categories
                                            .Include(x => x.Tasks)
-                                           .Single(x => x.Id == id);
+                                           .SingleOrDefault(x => x.Id == id);
 
             if (categoryToDelete is null)
                 throw new NotFoundException("Category not found");
@@ -92,7 +92,7 @@ namespace MyTasks.Persistence.Repositories
             }
 
             if (categoryToDelete.Tasks != null && categoryToDelete.Tasks.Any())
-                throw new ReferencedToAnotherObjectException();
+                throw new ReferencedToAnotherObjectException("Category is referenced to one or more task.");
 
 
 

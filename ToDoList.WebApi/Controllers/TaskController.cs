@@ -38,16 +38,16 @@ namespace ToDoList.WebApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddTask([FromBody]WriteTaskDto taskDto)
+        public IActionResult AddTask([FromBody]CreateTaskDto taskDto)
         {
             var id = _taskService.Add(taskDto);
 
-            return Created($"/api/[controller]/{id}", null);
+            return Created($"/api/Task/{id}", null);
         }
 
 
         [HttpPut("{id}")]
-        public IActionResult UpdateTask([FromRoute]int id, [FromBody] WriteTaskDto taskDto)
+        public IActionResult UpdateTask([FromRoute]int id, [FromBody] UpdateTaskDto taskDto)
         {
             _taskService.Update(id, taskDto);
 
@@ -61,6 +61,14 @@ namespace ToDoList.WebApi.Controllers
             _taskService.Delete(id);
 
             return NoContent();
+        }
+
+        [HttpPut("{id}/Finish")]
+        public IActionResult FinishTask(int id = 0)
+        {
+            _taskService.Finish(id);
+
+            return Ok();
         }
 
     }

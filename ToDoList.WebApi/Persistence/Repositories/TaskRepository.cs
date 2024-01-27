@@ -79,10 +79,12 @@ namespace ToDoList.WebApi.Persistence.Repositories
 
         public void Add(Task task)
         {
+
             if (_userContextService.UserId == null)
             {
                 throw new ForbidException();
             }
+
 
             task.UserId = (int)_userContextService.UserId;
             _context.Tasks.Add(task);
