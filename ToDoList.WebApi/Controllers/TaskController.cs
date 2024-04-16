@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ToDoList.Core.Dtos;
 using ToDoList.WebApi.Core.Models;
-using ToDoList.WebApi.Core.Models.Dtos;
 using ToDoList.WebApi.Core.Services;
 
 namespace ToDoList.WebApi.Controllers
@@ -13,16 +13,14 @@ namespace ToDoList.WebApi.Controllers
     public class TaskController : ControllerBase
     {
         private readonly ITaskService _taskService;
-        private ICategoryService _categoryService;
 
-        public TaskController(ITaskService taskService, ICategoryService categoryService)
+        public TaskController(ITaskService taskService)
         {
             _taskService = taskService;
-            _categoryService = categoryService;
         }
 
         [HttpGet]
-        public IActionResult GetTasks([FromBody] GetTasksParams param)
+        public IActionResult GetTasks([FromQuery] GetTasksParamsDto param)
         {
             var tasks = _taskService.Get(param);
 

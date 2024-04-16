@@ -1,5 +1,4 @@
-﻿using ToDoList.WebApi.Core.Models.Domains;
-using ToDoList.WebApi.Core.Models.Dtos;
+﻿using ToDoList.Core.Dtos;
 
 namespace ToDoList.WebApi.Core.Services
 {

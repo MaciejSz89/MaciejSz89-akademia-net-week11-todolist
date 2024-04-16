@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ToDoList.WebApi.Core.Models.Dtos;
-using ToDoList.WebApi.Core.Models;
+using ToDoList.Core.Dtos;
 using ToDoList.WebApi.Core.Services;
-using ToDoList.WebApi.Persistence.Services;
 
 namespace ToDoList.WebApi.Controllers
 {
@@ -18,9 +16,9 @@ namespace ToDoList.WebApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetCategories()
+        public IActionResult GetCategories([FromQuery] GetCategoriesParamsDto param)
         {
-            var categories = _categoryService.Get();
+            var categories = _categoryService.Get(param);
             return Ok(categories);
         }
 

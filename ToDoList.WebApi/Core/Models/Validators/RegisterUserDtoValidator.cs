@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using ToDoList.WebApi.Core.Models.Dtos;
+using ToDoList.Core.Dtos;
 
 namespace ToDoList.WebApi.Core.Models.Validators
 {

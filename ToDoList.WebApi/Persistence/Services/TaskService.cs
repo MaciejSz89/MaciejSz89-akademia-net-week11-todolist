@@ -1,14 +1,9 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
+using ToDoList.Core.Dtos;
 using ToDoList.WebApi.Core;
 using ToDoList.WebApi.Core.Models;
-using ToDoList.WebApi.Core.Models.Domains;
-using ToDoList.WebApi.Core.Models.Dtos;
 using ToDoList.WebApi.Core.Services;
 using ToDoList.WebApi.Exceptions;
-using ToDoList.WebApi.Persistance.Services;
 using Task = ToDoList.WebApi.Core.Models.Domains.Task;
 
 namespace ToDoList.WebApi.Persistence.Services
@@ -31,18 +26,20 @@ namespace ToDoList.WebApi.Persistence.Services
             _userContextService = userContextService;
         }
 
-        public IEnumerable<ReadTaskDto> Get(GetTasksParams param)
+        public ReadTasksPageDto Get(GetTasksParamsDto param)
         {
-            var tasks = _unitOfWork.Task.Get(param).ToList();
-            _logger.LogInformation($"Tasks with filter CategoryId:{param.CategoryId}, IsExecuted:{param.IsExecuted}, Title:{param.Title} read");
-            return _mapper.Map<List<ReadTaskDto>>(tasks);
+            var tasksPage = _unitOfWork.Task.Get(_mapper.Map<GetTasksParams>(param));
+            string message = $"Tasks with filter CategoryId:{param.CategoryId}, IsExecuted:{param.IsExecuted}, Title:{param.Title} read";
+            _logger.LogInformation(message);
+            return _mapper.Map<ReadTasksPageDto>(tasksPage);
         }
 
 
         public ReadTaskDto Get(int id)
         {
             var task = _mapper.Map<ReadTaskDto>(_unitOfWork.Task.Get(id));
-            _logger.LogInformation($"Task with id {task.Id} read");
+            string message = $"Task with id {task.Id} read";
+            _logger.LogInformation(message);
             return task;
         }
 
@@ -74,7 +71,8 @@ namespace ToDoList.WebApi.Persistence.Services
         {
             _unitOfWork.Task.Delete(id);
             _unitOfWork.Complete();
-            _logger.LogInformation($"Task with id {id} deleted");
+            string message = $"Task with id {id} deleted";
+            _logger.LogInformation(message);
         }
 
         public void Finish(int id)

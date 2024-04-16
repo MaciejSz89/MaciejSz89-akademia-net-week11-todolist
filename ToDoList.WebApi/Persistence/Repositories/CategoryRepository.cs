@@ -7,12 +7,14 @@ using ToDoList.WebApi.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using ToDoList.WebApi.Core.Services;
 using RestaurantAPI.Authorization;
+using MyFinances.WebApi.Models.Domains;
+using ToDoList.WebApi.Core.Models;
 
 namespace MyTasks.Persistence.Repositories
 {
     public class CategoryRepository : ICategoryRepository
     {
-        private IToDoListContext _context;
+        private readonly IToDoListContext _context;
         private readonly IAuthorizationService _authorizationService;
         private readonly IUserContextService _userContextService;
         public CategoryRepository(IToDoListContext context,
@@ -23,23 +25,37 @@ namespace MyTasks.Persistence.Repositories
             _authorizationService = authorizationService;
             _userContextService = userContextService;
         }
-        public IEnumerable<Category> Get()
+        public IDataPage<Category> Get(GetCategoriesParams param)
         {
+            var baseQuery = _context.Categories
+                    .OrderBy(x => x.Name)
+                    .Where(x => x.UserId == _userContextService.UserId);
 
-            return _context.Categories
-                           .Where(x => x.UserId == _userContextService.UserId)
-                           .OrderBy(x => x.Name)
-                           .ToList();
+            var lastPage = (_context.Categories.Count() + param.PageSize - 1) / param.PageSize;
+            var updatedCurrentPage = lastPage > param.PageSize * (param.PageNumber - 1)
+                       ? param.PageNumber
+                       : lastPage;
+
+            var categories = baseQuery
+                        .Skip(param.PageSize * (param.PageNumber - 1))
+                        .Take(param.PageSize)
+                        .ToList();
+
+            var result = new DataPage<Category>
+            {
+                Items = categories,
+                LastPage = lastPage,
+                CurrentPage = updatedCurrentPage
+
+            };
+
+            return result;
         }
 
         public Category Get(int id)
         {
             var category = _context.Categories
-                           .SingleOrDefault(x => x.Id == id);
-
-            if (category is null)
-                throw new NotFoundException("Category not found");
-
+                           .SingleOrDefault(x => x.Id == id) ?? throw new NotFoundException("Category not found");
             var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User,
                                                                            category,
                                                                            new ResourceOperationRequirement(ResourceOperation.Read)).Result;
@@ -54,11 +70,7 @@ namespace MyTasks.Persistence.Repositories
         public void Update(int id, Category category)
         {
             var categoryToUpdate = _context.Categories
-                                           .SingleOrDefault(x => x.Id == id);
-
-            if (categoryToUpdate is null)
-                throw new NotFoundException("Category not found");
-
+                                           .SingleOrDefault(x => x.Id == id) ?? throw new NotFoundException("Category not found");
             var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User,
                                                                            categoryToUpdate,
                                                                            new ResourceOperationRequirement(ResourceOperation.Update)).Result;
@@ -77,11 +89,7 @@ namespace MyTasks.Persistence.Repositories
         {
             var categoryToDelete = _context.Categories
                                            .Include(x => x.Tasks)
-                                           .SingleOrDefault(x => x.Id == id);
-
-            if (categoryToDelete is null)
-                throw new NotFoundException("Category not found");
-
+                                           .SingleOrDefault(x => x.Id == id) ?? throw new NotFoundException("Category not found");
             var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User,
                                                                            categoryToDelete,
                                                                            new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
@@ -110,5 +118,7 @@ namespace MyTasks.Persistence.Repositories
             category.UserId = (int)_userContextService.UserId;
             _context.Categories.Add(category);
         }
+
+
     }
 }

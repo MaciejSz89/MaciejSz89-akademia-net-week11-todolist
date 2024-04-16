@@ -3,10 +3,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using ToDoList.Core.Dtos;
 using ToDoList.WebApi.Core;
 using ToDoList.WebApi.Core.Models.Converters;
 using ToDoList.WebApi.Core.Models.Domains;
-using ToDoList.WebApi.Core.Models.Dtos;
 using ToDoList.WebApi.Core.Services;
 using ToDoList.WebApi.Exceptions;
 

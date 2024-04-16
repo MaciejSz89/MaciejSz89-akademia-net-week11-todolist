@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
+using ToDoList.Core.Dtos;
 using ToDoList.WebApi.Core;
+using ToDoList.WebApi.Core.Models;
 using ToDoList.WebApi.Core.Models.Domains;
-using ToDoList.WebApi.Core.Models.Dtos;
 using ToDoList.WebApi.Core.Services;
 
 namespace ToDoList.WebApi.Persistence.Services
@@ -18,10 +19,10 @@ namespace ToDoList.WebApi.Persistence.Services
             _mapper = mapper;
         }
 
-        public IEnumerable<ReadCategoryDto> Get()
+        public ReadCategoriesPageDto Get(GetCategoriesParamsDto param)
         {
-            var categories = _unitOfWork.Category.Get();
-            return categories.Select(c => _mapper.Map<ReadCategoryDto>(c));
+            var categoriesPage = _unitOfWork.Category.Get(_mapper.Map<GetCategoriesParams>(param));
+            return _mapper.Map<ReadCategoriesPageDto>(categoriesPage);
         }
 
         public ReadCategoryDto Get(int id)

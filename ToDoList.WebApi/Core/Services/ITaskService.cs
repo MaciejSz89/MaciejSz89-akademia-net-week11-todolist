@@ -1,11 +1,11 @@
-﻿using ToDoList.WebApi.Core.Models;
-using ToDoList.WebApi.Core.Models.Dtos;
+﻿using ToDoList.Core.Dtos;
+using ToDoList.WebApi.Core.Models;
 
 namespace ToDoList.WebApi.Core.Services
 {
     public interface ITaskService
     {
-        IEnumerable<ReadTaskDto> Get(GetTasksParams param);
+        ReadTasksPageDto Get(GetTasksParamsDto param);
         ReadTaskDto Get(int id);
         int Add(CreateTaskDto taskDto);
         void Update(int id, UpdateTaskDto taskDto);

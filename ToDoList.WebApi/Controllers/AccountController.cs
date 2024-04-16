@@ -1,12 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using ToDoList.WebApi.Core;
-using ToDoList.WebApi.Core.Models.Dtos;
+﻿using Microsoft.AspNetCore.Mvc;
 using ToDoList.WebApi.Core.Services;
-using ToDoList.WebApi.Persisntence;
-using ToDoList.WebApi.Exceptions;
+using ToDoList.Core.Dtos;
 
 namespace ToDoList.WebApi.Controllers
 {

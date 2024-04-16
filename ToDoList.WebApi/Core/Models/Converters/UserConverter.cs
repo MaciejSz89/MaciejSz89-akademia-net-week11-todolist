@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using ToDoList.Core.Dtos;
 using ToDoList.WebApi.Core.Models.Domains;
-using ToDoList.WebApi.Core.Models.Dtos;
 
 namespace ToDoList.WebApi.Core.Models.Converters
 {

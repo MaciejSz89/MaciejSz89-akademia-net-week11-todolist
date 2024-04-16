@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using MyFinances.WebApi.Models.Domains;
 using RestaurantAPI.Authorization;
 using ToDoList.WebApi.Core;
 using ToDoList.WebApi.Core.Models;
@@ -15,7 +16,7 @@ namespace ToDoList.WebApi.Persistence.Repositories
 {
     public class TaskRepository : ITaskRepository
     {
-        private IToDoListContext _context;
+        private readonly IToDoListContext _context;
         private readonly IAuthorizationService _authorizationService;
         private readonly IUserContextService _userContextService;
 
@@ -28,7 +29,7 @@ namespace ToDoList.WebApi.Persistence.Repositories
             _userContextService = userContextService;
         }
 
-        public IEnumerable<Task> Get(GetTasksParams param)
+        public IDataPage<Task> Get(GetTasksParams param)
         {
             var baseQuery = _context.Tasks
                                 .Include(x => x.Category)
@@ -46,12 +47,25 @@ namespace ToDoList.WebApi.Persistence.Repositories
 
             baseQuery = baseQuery.OrderBy(x => x.Term);
 
+            var lastPage = (_context.Tasks.Count() + param.PageSize - 1) / param.PageSize;
+            var updatedCurrentPage = lastPage > param.PageSize * (param.PageNumber - 1)
+                       ? param.PageNumber
+                       : lastPage;
+
             var tasks = baseQuery
                     .Skip(param.PageSize * (param.PageNumber - 1))
                     .Take(param.PageSize)
                     .ToList();
 
-            return tasks;
+            var result = new DataPage<Task>
+            {
+                Items = tasks,
+                LastPage = lastPage,
+                CurrentPage = updatedCurrentPage
+
+            };
+
+            return result;
         }
 
 
@@ -59,11 +73,7 @@ namespace ToDoList.WebApi.Persistence.Repositories
         {
             var task = _context.Tasks
                 .Include(t=>t.Category)
-                .SingleOrDefault(x => x.Id == id);
-
-            if (task is null)
-                throw new NotFoundException("Task not found");
-
+                .SingleOrDefault(x => x.Id == id) ?? throw new NotFoundException("Task not found");
             var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User,
                                                                            task,
                                                                            new ResourceOperationRequirement(ResourceOperation.Read)).Result;
@@ -93,11 +103,7 @@ namespace ToDoList.WebApi.Persistence.Repositories
         public void Update(int id, Task task)
         {
             var taskToUpdate = _context.Tasks
-                                       .SingleOrDefault(x => x.Id == id);
-
-            if (taskToUpdate is null)
-                throw new NotFoundException("Task not found");
-
+                                       .SingleOrDefault(x => x.Id == id) ?? throw new NotFoundException("Task not found");
             var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User,
                                                                            taskToUpdate,
                                                                            new ResourceOperationRequirement(ResourceOperation.Update)).Result;
@@ -120,11 +126,7 @@ namespace ToDoList.WebApi.Persistence.Repositories
         public void Delete(int id)
         {
             var taskToDelete = _context.Tasks
-                                       .SingleOrDefault(x => x.Id == id);
-
-            if (taskToDelete is null)
-                throw new NotFoundException("Task not found");
-
+                                       .SingleOrDefault(x => x.Id == id) ?? throw new NotFoundException("Task not found");
             var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User,
                                                                            taskToDelete,
                                                                            new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
@@ -140,11 +142,7 @@ namespace ToDoList.WebApi.Persistence.Repositories
         public void Finish(int id)
         {
             var taskToUpdate = _context.Tasks
-                                       .SingleOrDefault(x => x.Id == id);
-
-            if (taskToUpdate is null)
-                throw new NotFoundException("Task not found");
-
+                                       .SingleOrDefault(x => x.Id == id) ?? throw new NotFoundException("Task not found");
             var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User,
                                                                            taskToUpdate,
                                                                            new ResourceOperationRequirement(ResourceOperation.Update)).Result;
