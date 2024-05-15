@@ -6,6 +6,7 @@ namespace ToDoList.WebApi.Core.Repositories
 {
     public interface ICategoryRepository
     {
+        IEnumerable<Category> Get();
         IDataPage<Category> Get(GetCategoriesParams param);
         Category Get(int id);
         void Update(int id, Category category);

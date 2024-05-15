@@ -15,11 +15,18 @@ namespace ToDoList.WebApi.Controllers
             _categoryService = categoryService;
         }
 
+
+
         [HttpGet]
         public IActionResult GetCategories([FromQuery] GetCategoriesParamsDto param)
         {
-            var categories = _categoryService.Get(param);
-            return Ok(categories);
+            if (param == null || param.PageSize==0)
+            {
+                var categories = _categoryService.Get();
+                return Ok(categories);
+            }
+            var categoriesPage = _categoryService.Get(param);
+            return Ok(categoriesPage);
         }
 
         [HttpGet("{id}")]

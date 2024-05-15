@@ -19,6 +19,13 @@ namespace ToDoList.WebApi.Persistence.Services
             _mapper = mapper;
         }
 
+        public IEnumerable<ReadCategoryDto> Get()
+        {
+            var categories = _unitOfWork.Category.Get();
+            return _mapper.Map<IEnumerable<ReadCategoryDto>>(categories);
+        }
+
+
         public ReadCategoriesPageDto Get(GetCategoriesParamsDto param)
         {
             var categoriesPage = _unitOfWork.Category.Get(_mapper.Map<GetCategoriesParams>(param));
@@ -49,5 +56,6 @@ namespace ToDoList.WebApi.Persistence.Services
             _unitOfWork.Complete();
             return category.Id;
         }
+
     }
 }

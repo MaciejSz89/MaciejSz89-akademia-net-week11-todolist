@@ -25,6 +25,16 @@ namespace MyTasks.Persistence.Repositories
             _authorizationService = authorizationService;
             _userContextService = userContextService;
         }
+
+        public IEnumerable<Category> Get()
+        {
+            var categories = _context.Categories
+                                   .OrderBy(x => x.Name)
+                                   .Where(x => x.UserId == _userContextService.UserId)
+                                   .ToList();
+            return categories;
+        }
+
         public IDataPage<Category> Get(GetCategoriesParams param)
         {
             var baseQuery = _context.Categories
@@ -118,7 +128,5 @@ namespace MyTasks.Persistence.Repositories
             category.UserId = (int)_userContextService.UserId;
             _context.Categories.Add(category);
         }
-
-
     }
 }

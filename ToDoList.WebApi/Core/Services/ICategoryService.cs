@@ -5,6 +5,7 @@ namespace ToDoList.WebApi.Core.Services
 {
     public interface ICategoryService
     {
+        IEnumerable<ReadCategoryDto> Get();
         ReadCategoriesPageDto Get(GetCategoriesParamsDto param);
         ReadCategoryDto Get(int id);
         void Update(int id, WriteCategoryDto category);
