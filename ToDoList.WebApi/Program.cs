@@ -106,7 +106,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseAuthentication();
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
