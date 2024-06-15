@@ -12,5 +12,6 @@ namespace ToDoList.WebApi.Core.Services
 
         void Delete(int id);
         void Finish(int id);
+        void Restore(int id);
     }
 }

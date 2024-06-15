@@ -13,5 +13,6 @@ namespace ToDoList.WebApi.Core.Repositories
         void Update(int id, Task task);
         void Delete(int id);
         void Finish(int id);
+        void Restore(int id);
     }
 }

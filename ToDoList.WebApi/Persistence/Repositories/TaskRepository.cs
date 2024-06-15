@@ -156,5 +156,22 @@ namespace ToDoList.WebApi.Persistence.Repositories
 
             _context.Tasks.Update(taskToUpdate);
         }
+        public void Restore(int id)
+        {
+            var taskToUpdate = _context.Tasks
+                                       .SingleOrDefault(x => x.Id == id) ?? throw new NotFoundException("Task not found");
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User,
+                                                                           taskToUpdate,
+                                                                           new ResourceOperationRequirement(ResourceOperation.Update)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
+
+            taskToUpdate.IsExecuted = false;
+
+            _context.Tasks.Update(taskToUpdate);
+        }
     }
 }

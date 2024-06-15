@@ -80,6 +80,12 @@ namespace ToDoList.WebApi.Persistence.Services
             _unitOfWork.Task.Finish(id);
             _unitOfWork.Complete();
             _logger.LogInformation($"Task with id {id} finished");
+        }      
+        public void Restore(int id)
+        {
+            _unitOfWork.Task.Restore(id);
+            _unitOfWork.Complete();
+            _logger.LogInformation($"Task with id {id} restored");
         }
 
     }

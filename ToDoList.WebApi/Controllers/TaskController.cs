@@ -69,5 +69,13 @@ namespace ToDoList.WebApi.Controllers
             return Ok();
         }
 
+        [HttpPut("{id}/Restore")]
+        public IActionResult Restore(int id = 0)
+        {
+            _taskService.Restore(id);
+
+            return Ok();
+        }
+
     }
 }
