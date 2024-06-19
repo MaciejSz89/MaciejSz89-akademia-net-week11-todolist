@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using MyFinances.WebApi.Models.Domains;
 using RestaurantAPI.Authorization;
+using System.Threading.Tasks;
+using ToDoList.Core;
 using ToDoList.WebApi.Core;
 using ToDoList.WebApi.Core.Models;
 using ToDoList.WebApi.Core.Models.Domains;
@@ -47,6 +49,36 @@ namespace ToDoList.WebApi.Persistence.Repositories
 
             baseQuery = baseQuery.OrderBy(x => x.Term);
 
+            switch (param.SortMethod)
+            {
+                case TaskSortMethod.ByIdAscending:
+                    baseQuery = baseQuery.OrderBy(x => x.IsExecuted)
+                                 .ThenBy(x => x.Id);
+                    break;
+                case TaskSortMethod.ByIdDescending:
+                    baseQuery = baseQuery.OrderBy(x => x.IsExecuted)
+                                 .ThenByDescending(x => x.Id);
+                    break;
+                case TaskSortMethod.ByTitleAscending:
+                    baseQuery = baseQuery.OrderBy(x => x.IsExecuted)
+                                 .ThenBy(x => x.Title);
+                    break;
+                case TaskSortMethod.ByTitleDescending:
+                    baseQuery = baseQuery.OrderBy(x => x.IsExecuted)
+                                 .ThenByDescending(x => x.Title);
+                    break;
+                case TaskSortMethod.ByTermAscending:
+                    baseQuery = baseQuery.OrderBy(x => x.IsExecuted)
+                                 .ThenBy(x => x.Term);
+                    break;
+                case TaskSortMethod.ByTermDescending:
+                    baseQuery = baseQuery.OrderBy(x => x.IsExecuted)
+                                 .ThenByDescending(x => x.Term);
+                    break;
+                default:
+                    break;
+            }
+
             var lastPage = (_context.Tasks.Count() + param.PageSize - 1) / param.PageSize;
             var updatedCurrentPage = lastPage > param.PageSize * (param.PageNumber - 1)
                        ? param.PageNumber
@@ -56,6 +88,8 @@ namespace ToDoList.WebApi.Persistence.Repositories
                     .Skip(param.PageSize * (param.PageNumber - 1))
                     .Take(param.PageSize)
                     .ToList();
+
+
 
             var result = new DataPage<Task>
             {
@@ -72,7 +106,7 @@ namespace ToDoList.WebApi.Persistence.Repositories
         public Task Get(int id)
         {
             var task = _context.Tasks
-                .Include(t=>t.Category)
+                .Include(t => t.Category)
                 .SingleOrDefault(x => x.Id == id) ?? throw new NotFoundException("Task not found");
             var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User,
                                                                            task,
