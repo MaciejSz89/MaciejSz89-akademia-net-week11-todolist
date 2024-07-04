@@ -75,6 +75,14 @@ namespace ToDoList.WebApi.Persistence.Repositories
                     baseQuery = baseQuery.OrderBy(x => x.IsExecuted)
                                  .ThenByDescending(x => x.Term);
                     break;
+                case TaskSortMethod.ByCategoryAscending:
+                    baseQuery = baseQuery.OrderBy(x => x.IsExecuted)
+                                 .ThenBy(x => x.Category.Name);
+                    break;
+                case TaskSortMethod.ByCategoryDescending:
+                    baseQuery = baseQuery.OrderBy(x => x.IsExecuted)
+                                 .ThenByDescending(x => x.Category.Name);
+                    break;
                 default:
                     break;
             }

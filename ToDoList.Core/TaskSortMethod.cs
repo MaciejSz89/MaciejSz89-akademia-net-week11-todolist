@@ -11,7 +11,9 @@ namespace ToDoList.Core
         ByTitleAscending,
         ByTitleDescending,
         ByTermAscending,
-        ByTermDescending
+        ByTermDescending,
+        ByCategoryAscending,
+        ByCategoryDescending,
 
     }
 }
