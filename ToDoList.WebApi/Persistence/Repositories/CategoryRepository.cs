@@ -9,6 +9,7 @@ using ToDoList.WebApi.Core.Services;
 using RestaurantAPI.Authorization;
 using MyFinances.WebApi.Models.Domains;
 using ToDoList.WebApi.Core.Models;
+using ToDoList.Core;
 
 namespace MyTasks.Persistence.Repositories
 {
@@ -37,9 +38,26 @@ namespace MyTasks.Persistence.Repositories
 
         public IDataPage<Category> Get(GetCategoriesParams param)
         {
-            var baseQuery = _context.Categories
-                    .OrderBy(x => x.Name)
+            var baseQuery = _context.Categories                
                     .Where(x => x.UserId == _userContextService.UserId);
+
+            switch (param.SortMethod)
+            {
+                case CategorySortMethod.ByIdAscending:
+                    baseQuery = baseQuery.OrderBy(x => x.Id);
+                    break;
+                case CategorySortMethod.ByIdDescending:
+                    baseQuery = baseQuery.OrderByDescending(x => x.Id);
+                    break;
+                case CategorySortMethod.ByNameAscending:
+                    baseQuery = baseQuery.OrderBy(x => x.Name);
+                    break;
+                case CategorySortMethod.ByNameDescending:
+                    baseQuery = baseQuery.OrderByDescending(x => x.Name);
+                    break;                
+                default:
+                    break;
+            }
 
             var lastPage = (_context.Categories.Count() + param.PageSize - 1) / param.PageSize;
             var updatedCurrentPage = lastPage > param.PageSize * (param.PageNumber - 1)

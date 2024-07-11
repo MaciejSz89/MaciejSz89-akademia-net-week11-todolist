@@ -8,7 +8,7 @@ namespace ToDoList.Core.Dtos
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
-
+        public CategorySortMethod SortMethod { get; set; }
     }
 
 }
